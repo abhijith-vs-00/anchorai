@@ -107,25 +107,6 @@ export default function LandingPage() {
             </button>
           </div>
 
-          <div className="mt-6 rounded-2xl border border-teal/25 bg-teal/5 p-4">
-            <p className="text-xs font-semibold uppercase tracking-[0.16em] text-teal">
-              Pitch test accounts
-            </p>
-            <p className="mt-2 text-xs text-muted">Persistent seeded data for demos & evaluators.</p>
-            <ul className="mt-3 space-y-2 text-sm text-foam">
-              <li>
-                <span className="text-muted">Recoverer:</span>{" "}
-                <code className="text-teal">phoenix_demo</code> /{" "}
-                <code className="text-teal">AnchorDemo1!</code>
-              </li>
-              <li>
-                <span className="text-muted">Companion:</span>{" "}
-                <code className="text-teal">care_demo</code> /{" "}
-                <code className="text-teal">AnchorDemo1!</code>
-              </li>
-            </ul>
-          </div>
-
           {error && (
             <p role="alert" className="mt-4 text-sm text-coral">
               {error}

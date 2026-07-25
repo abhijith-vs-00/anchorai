@@ -169,17 +169,16 @@ Automated tests mock/avoid live Gemini quota. Before submission, manually smoke-
 ## Evaluator Instructions
 
 1. Open the deployed URL
-2. Prefer **pitch test accounts** (persistent seeded data):
-   - Recoverer: `phoenix_demo` / `AnchorDemo1!`
-   - Companion: `care_demo` / `AnchorDemo1!`
-3. Or use **See how it works** (fresh demo; data may not persist)
-4. Recoverer home → Blueprint / Help Me Now / After, plus Talk to AI, Talk to human, Urge timer
-5. Companion → support board replies + linked recoverer overview
+2. Use **See how it works** for a fresh demo (data may not persist), or log in with the pitch test accounts shared separately by the team (not shown in the product UI)
+3. Recoverer home → Blueprint / Help Me Now / After, plus Talk to AI, Talk to human, Urge timer
+4. Companion → support board replies + linked recoverer overview
 
 ```bash
 npm run seed
 npm run seed:demo
 ```
+
+Pitch credentials for evaluators are shared out-of-band (not embedded in the app UI).
 
 No MongoDB or Gemini account required for evaluators.
 

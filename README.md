@@ -151,10 +151,21 @@ If Node fails with `querySrv ECONNREFUSED` on Windows, use Atlas **standard conn
 
 ```bash
 npm test
+npm run test:coverage
 npm run build
 ```
 
-Automated tests mock/avoid live Gemini quota. Before submission, manually smoke-test live Gemini on Preview, then lightly on Production.
+Automated suite covers:
+- Safety classifier & emergency options
+- Auth password/username helpers
+- Zod AI schemas (intervention, prevention, companion, chat)
+- Gemini adapter error mapping (mocked SDK — no live quota)
+- Intervention & chat services with mocked Gemini/repos
+- Journey / Recovery Memory calculations
+- API response envelope helpers
+- Landing + Home UI smoke tests (Testing Library)
+
+Do **not** run live Gemini in CI; use Preview smoke tests sparingly before submission.
 
 ## Deployment
 

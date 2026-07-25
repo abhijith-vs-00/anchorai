@@ -1,6 +1,7 @@
 import { listCheckins } from "@/lib/repositories/checkin.repository";
 import { listInterventions } from "@/lib/repositories/intervention.repository";
 import { listSetbacks } from "@/lib/repositories/setback.repository";
+import type { Checkin, Intervention, Setback } from "@/types";
 
 export interface JourneyStats {
   monthLabel: string;
@@ -21,13 +22,14 @@ function daysInMonth(d = new Date()): number {
   return new Date(d.getFullYear(), d.getMonth() + 1, 0).getDate();
 }
 
-export async function getJourneyStats(userId: string): Promise<JourneyStats> {
-  const since = startOfMonth();
-  const [checkins, interventions, setbacks] = await Promise.all([
-    listCheckins(userId, 200),
-    listInterventions(userId, 200),
-    listSetbacks(userId, 200),
-  ]);
+/** Pure aggregator — easy to unit test without MongoDB */
+export function computeJourneyStatsFromData(
+  checkins: Checkin[],
+  interventions: Intervention[],
+  setbacks: Setback[],
+  now = new Date()
+): JourneyStats {
+  const since = startOfMonth(now);
 
   const monthCheckins = checkins.filter((c) => new Date(c.createdAt) >= since);
   const monthInterventions = interventions.filter(
@@ -41,7 +43,6 @@ export async function getJourneyStats(userId: string): Promise<JourneyStats> {
       daySet.add(new Date(c.createdAt).toDateString());
     }
   }
-  // Count unique days with any engagement as recovery-oriented days
   for (const i of monthInterventions) {
     daySet.add(new Date(i.createdAt).toDateString());
   }
@@ -51,15 +52,13 @@ export async function getJourneyStats(userId: string): Promise<JourneyStats> {
     monthInterventions.length;
 
   const momentsOvercome = monthInterventions.filter(
-    (i) =>
-      i.outcome === "much_better" || i.outcome === "a_little_better"
+    (i) => i.outcome === "much_better" || i.outcome === "a_little_better"
   ).length;
 
   const reachedOut = monthInterventions.filter(
     (i) => i.recommendedTool === "reach_someone"
   ).length;
 
-  const now = new Date();
   return {
     monthLabel: now.toLocaleString("en-US", { month: "long", year: "numeric" }),
     daysInMonth: daysInMonth(now),
@@ -70,4 +69,13 @@ export async function getJourneyStats(userId: string): Promise<JourneyStats> {
     reachedOut,
     toolsUsed: monthInterventions.length,
   };
+}
+
+export async function getJourneyStats(userId: string): Promise<JourneyStats> {
+  const [checkins, interventions, setbacks] = await Promise.all([
+    listCheckins(userId, 200),
+    listInterventions(userId, 200),
+    listSetbacks(userId, 200),
+  ]);
+  return computeJourneyStatsFromData(checkins, interventions, setbacks);
 }
